@@ -1,0 +1,29 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: KubeCent-dashboards-kubernetes
+  namespace: argocd
+  labels:
+    app.kubernetes.io/name: KubeCent-dashboards-kubernetes
+    app.kubernetes.io/version: HEAD
+    app.kubernetes.io/managed-by: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default # You may need to change this!
+  source:
+    path: ./
+    repoURL: https://github.com/voidVisual/KubeCent-Monitoring-dashboard.git
+    targetRevision: HEAD
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
+  syncPolicy:
+    
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - Replace=true
