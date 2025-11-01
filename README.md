@@ -8,7 +8,6 @@ Monitoring Dashboard in KubeCent delivers real-time visibility into Kubernetes c
 - [Features](#features)
 - [Installation](#installation)
   - [Install manually](#install-manually)
-  - [Install via grafana.com](#install-via-grafanacom)
   - [Install with ArgoCD](#install-with-argocd)
   - [Install with Helm values](#install-with-helm-values)
   - [Install as ConfigMaps](#install-as-configmaps)
@@ -38,6 +37,49 @@ They are not backward compatible with older Grafana versions because they try to
 - `$__rate_interval` variable introduced in Grafana 7.2 ([Grafana Blog post](https://grafana.com/blog/2020/09/28/new-in-grafana-7.2-__rate_interval-for-prometheus-rate-queries-that-just-work/))
 
 They also have a `Prometheus Datasource` variable so they will work on a federated Grafana instance.
+
+
+## Installation
+
+In most cases, you will need to clone this repository (or your fork):
+
+```terminal
+git clone https://github.com/voidVisual/KubeCent-Monitoring-dashboard.git
+cd KubeCent-Monitoring-dashboard
+```
+
+If you plan to deploy these dashboards using [ArgoCD](#install-with-argocd), [ConfigMaps](#install-as-configmaps) or [Terraform](#install-as-configmaps-with-terraform), you will also need to enable and configure the `dashboards sidecar` on the Grafana Helm chart to get the dashboards loaded in your Grafana instance:
+
+```yaml
+# kube-prometheus-stack values
+grafana:
+  sidecar:
+    dashboards:
+      enabled: true
+      defaultFolderName: "General"
+      label: grafana_dashboard
+      labelValue: "1"
+      folderAnnotation: grafana_folder
+      searchNamespace: ALL
+      provider:
+        foldersFromFilesStructure: true
+```
+### Install manually
+
+On the WebUI of your Grafana instance, put your mouse over the `+` sign on the left menu, then click on `Import`.\
+Once you are on the Import page, you can upload the JSON files one by one from your local copy using the `Upload JSON file` button.
+
+### Install with ArgoCD
+
+If you are using ArgoCD, this will deploy the dashboards in the default project of ArgoCD:
+
+```terminal
+kubectl apply -f argocd-app.yml
+```
+
+You will also need to enable and configure the Grafana `dashboards sidecar` as described in [Installation](#installation).
+
+
 
 
 
